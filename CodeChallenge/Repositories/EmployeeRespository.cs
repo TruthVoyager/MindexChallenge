@@ -41,5 +41,16 @@ namespace CodeChallenge.Repositories
         {
             return _employeeContext.Remove(employee).Entity;
         }
+
+        public Compensation AddCompensation(Compensation compensation)
+        {
+            _employeeContext.Compensations.Add(compensation);
+            return compensation;
+        }
+
+        public Compensation GetCompensationByEmployeeId(string employeeId)
+        {
+            return _employeeContext.Compensations.FirstOrDefault(c => c.Employee.EmployeeId == employeeId);
+        }
     }
 }

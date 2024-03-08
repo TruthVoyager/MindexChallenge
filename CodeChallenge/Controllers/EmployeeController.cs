@@ -58,5 +58,42 @@ namespace CodeChallenge.Controllers
 
             return Ok(newEmployee);
         }
+
+        [HttpGet("reportingStructure/{employeeId}")]
+        public ActionResult<ReportingStructure> GetReportingStructure(string employeeId)
+        {
+            var reportingStructure = _employeeService.GetReportingServiceById(employeeId);
+            if (reportingStructure == null)
+            {
+                return NotFound();
+            }
+            return Ok(reportingStructure);
+        }
+
+        [HttpPost("compensation")]
+        public ActionResult<Compensation> CreateCompensation(Compensation compensation)
+        {
+            try
+            {
+                var createdCompensation = _employeeService.CreateCompensation(compensation);
+                return CreatedAtAction(nameof(GetCompensation), new { id = createdCompensation.Employee.EmployeeId }, createdCompensation);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to create compensation");
+                return StatusCode(500, "Failed to create compensation");
+            }
+        }
+
+        [HttpGet("compensation/{employeeId}")]
+        public ActionResult<Compensation> GetCompensation(string employeeId)
+        {
+            var compensation = _employeeService.GetCompensationByEmployeeId(employeeId);
+            if (compensation == null)
+            {
+                return NotFound();
+            }
+            return Ok(compensation);
+        }
     }
 }

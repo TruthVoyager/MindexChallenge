@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using CodeChallenge.Models;
 using Microsoft.Extensions.Logging;
 using CodeChallenge.Repositories;
+using CodeChallenge.Reporting;
 
 namespace CodeChallenge.Services
 {
@@ -40,6 +41,43 @@ namespace CodeChallenge.Services
             return null;
         }
 
+        public ReportingStructure GetReportingServiceById(string id)
+        {
+            if (!String.IsNullOrEmpty(id))
+            {
+                var employee = _employeeRepository.GetById(id);
+                if (employee != null)
+                {
+                    int numberOfReports = CountDirectReports(employee);
+                    return new ReportingStructure
+                    {
+                        Employee = employee,
+                        NumberOfReports = numberOfReports
+                    };
+                }
+            }
+
+            return null;
+        }
+
+        private int CountDirectReports(Employee employee)
+        {
+            int count = 0;
+            if (employee.DirectReports != null)
+            {
+                foreach (var report in employee.DirectReports)
+                {
+                    var directReport = _employeeRepository.GetById(report.EmployeeId);
+                    if (directReport != null)
+                    {
+                        count++;
+                        count += CountDirectReports(directReport);
+                    }
+                }
+            }
+            return count;
+        }
+
         public Employee Replace(Employee originalEmployee, Employee newEmployee)
         {
             if(originalEmployee != null)
@@ -58,6 +96,30 @@ namespace CodeChallenge.Services
             }
 
             return newEmployee;
+        }
+
+        public Compensation CreateCompensation(Compensation compensation)
+        {
+            if (compensation == null)
+            {
+                throw new ArgumentNullException(nameof(compensation));
+            }
+
+            // Save compensation to database
+            var savedCompensation = _employeeRepository.AddCompensation(compensation);
+            _employeeRepository.SaveAsync().Wait();
+
+            return savedCompensation;
+        }
+
+        public Compensation GetCompensationByEmployeeId(string employeeId)
+        {
+            if (string.IsNullOrEmpty(employeeId))
+            {
+                throw new ArgumentNullException(nameof(employeeId));
+            }
+
+            return _employeeRepository.GetCompensationByEmployeeId(employeeId);
         }
     }
 }
