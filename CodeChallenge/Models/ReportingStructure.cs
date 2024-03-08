@@ -2,7 +2,7 @@
 {
     public class ReportingStructure
     {
-        public Employee Employee { get; set; }
+        public string EmployeeId { get; set; }
         public int NumberOfReports { get; set; }
     }
 }

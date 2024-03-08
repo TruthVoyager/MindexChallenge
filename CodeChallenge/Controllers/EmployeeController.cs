@@ -59,8 +59,8 @@ namespace CodeChallenge.Controllers
             return Ok(newEmployee);
         }
 
-        [HttpGet("reportingStructure/{employeeId}")]
-        public ActionResult<ReportingStructure> GetReportingStructure(string employeeId)
+        [HttpGet("getReportingStructure/{employeeId}")]
+        public IActionResult GetReportingStructure(string employeeId)
         {
             var reportingStructure = _employeeService.GetReportingServiceById(employeeId);
             if (reportingStructure == null)
@@ -70,13 +70,13 @@ namespace CodeChallenge.Controllers
             return Ok(reportingStructure);
         }
 
-        [HttpPost("compensation")]
-        public ActionResult<Compensation> CreateCompensation(Compensation compensation)
+        [HttpPost("createCompensation")]
+        public IActionResult CreateCompensation(Compensation compensation)
         {
             try
             {
                 var createdCompensation = _employeeService.CreateCompensation(compensation);
-                return CreatedAtAction(nameof(GetCompensation), new { id = createdCompensation.Employee.EmployeeId }, createdCompensation);
+                return CreatedAtRoute("getCompensationById", new { id = createdCompensation.EmployeeId }, createdCompensation);
             }
             catch (Exception ex)
             {
@@ -85,8 +85,8 @@ namespace CodeChallenge.Controllers
             }
         }
 
-        [HttpGet("compensation/{employeeId}")]
-        public ActionResult<Compensation> GetCompensation(string employeeId)
+        [HttpGet("getCompensationById/{employeeId}", Name = "getCompensationById")]
+        public IActionResult GetCompensationById(string employeeId)
         {
             var compensation = _employeeService.GetCompensationByEmployeeId(employeeId);
             if (compensation == null)

@@ -50,7 +50,7 @@ namespace CodeChallenge.Services
                     int numberOfReports = CountDirectReports(employee);
                     return new ReportingStructure
                     {
-                        Employee = employee,
+                        EmployeeId = employee.EmployeeId,
                         NumberOfReports = numberOfReports
                     };
                 }

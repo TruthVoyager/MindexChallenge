@@ -50,7 +50,7 @@ namespace CodeChallenge.Repositories
 
         public Compensation GetCompensationByEmployeeId(string employeeId)
         {
-            return _employeeContext.Compensations.FirstOrDefault(c => c.Employee.EmployeeId == employeeId);
+            return _employeeContext.Compensations.FirstOrDefault(c => c.EmployeeId == employeeId);
         }
     }
 }
