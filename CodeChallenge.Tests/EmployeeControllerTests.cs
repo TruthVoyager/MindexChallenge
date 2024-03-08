@@ -3,14 +3,13 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
+
 using CodeChallenge.Models;
 
 using CodeCodeChallenge.Tests.Integration.Extensions;
 using CodeCodeChallenge.Tests.Integration.Helpers;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json;
 
 namespace CodeCodeChallenge.Tests.Integration
 {
@@ -143,7 +142,7 @@ namespace CodeCodeChallenge.Tests.Integration
 
 
         [TestMethod]
-        public async Task CreateCompensation_Returns_Created()
+        public void CreateCompensation_Returns_Created()
         {
             // Arrange
             var compensation = new Compensation()
@@ -156,14 +155,14 @@ namespace CodeCodeChallenge.Tests.Integration
             var requestContent = new JsonSerialization().ToJson(compensation);
 
             // Execute
-            var postRequestTask = await _httpClient.PostAsync("api/employee/createCompensation",
+            var postRequestTask = _httpClient.PostAsync("api/employee/createCompensation",
                new StringContent(requestContent, Encoding.UTF8, "application/json"));
-            var response = await postRequestTask.Content.ReadAsStringAsync();
+            var response = postRequestTask.Result;
 
             // Assert
-            Assert.AreEqual(HttpStatusCode.Created, postRequestTask.StatusCode);
+            Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
 
-            var newCompensation = JsonConvert.DeserializeObject<Compensation>(response);
+            var newCompensation = response.DeserializeContent<Compensation>();
             Assert.IsNotNull(newCompensation);
             Assert.AreEqual(compensation.EmployeeId, newCompensation.EmployeeId);
             Assert.AreEqual(compensation.Salary, newCompensation.Salary);
@@ -182,7 +181,7 @@ namespace CodeCodeChallenge.Tests.Integration
             };
             // Create the compensation entry
             var requestContent = new JsonSerialization().ToJson(compensation);
-            var postRequestTask = _httpClient.PostAsync("api/employee/compensation",
+            var postRequestTask = _httpClient.PostAsync("api/employee/createCompensation",
                new StringContent(requestContent, Encoding.UTF8, "application/json"));
             var postResponse = postRequestTask.Result;
             Assert.AreEqual(HttpStatusCode.Created, postResponse.StatusCode);

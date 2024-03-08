@@ -29,7 +29,9 @@ namespace CodeChallenge.Controllers
 
             _employeeService.Create(employee);
 
-            return CreatedAtRoute("getEmployeeById", new { id = employee.EmployeeId }, employee);
+            var result = CreatedAtRoute("getEmployeeById", new { id = employee.EmployeeId }, employee);
+
+            return result;
         }
 
         [HttpGet("{id}", Name = "getEmployeeById")]
@@ -76,7 +78,8 @@ namespace CodeChallenge.Controllers
             try
             {
                 var createdCompensation = _employeeService.CreateCompensation(compensation);
-                return CreatedAtRoute("getCompensationById", new { id = createdCompensation.EmployeeId }, createdCompensation);
+                var result = CreatedAtRoute("getCompensationById", new { employeeId = createdCompensation.EmployeeId }, createdCompensation);
+                return result;
             }
             catch (Exception ex)
             {
