@@ -19,36 +19,36 @@ namespace CodeChallenge.Services
             _logger = logger;
         }
 
-        public Employee Create(Employee employee)
+        public async Task<Employee> Create(Employee employee)
         {
             if(employee != null)
             {
                 _employeeRepository.Add(employee);
-                _employeeRepository.SaveAsync().Wait();
+                await _employeeRepository.SaveAsync();
             }
 
             return employee;
         }
 
-        public Employee GetById(string id)
+        public async Task<Employee> GetById(string id)
         {
             if(!String.IsNullOrEmpty(id))
             {
-                return _employeeRepository.GetById(id);
+                return await _employeeRepository.GetByIdAsync(id);
             }
 
             return null;
         }
 
         // Retrieves the reporting structure for a given employee, calculating the total number of reports.
-        public ReportingStructure GetReportingServiceById(string id)
+        public async Task<ReportingStructure> GetReportingServiceById(string id)
         {
             if (!String.IsNullOrEmpty(id))
             {
-                var employee = _employeeRepository.GetById(id);
+                var employee = await _employeeRepository.GetByIdAsync(id);
                 if (employee != null)
                 {
-                    int numberOfReports = CountDirectReports(employee);
+                    int numberOfReports = await CountDirectReportsAsync(employee);
                     return new ReportingStructure
                     {
                         employee = employee.EmployeeId,
@@ -60,25 +60,25 @@ namespace CodeChallenge.Services
             return null;
         }
 
-        private int CountDirectReports(Employee employee)
+        private async Task<int> CountDirectReportsAsync(Employee employee)
         {
             int count = 0;
             if (employee.DirectReports != null)
             {
                 foreach (var report in employee.DirectReports)
                 {
-                    var directReport = _employeeRepository.GetById(report.EmployeeId);
+                    var directReport = await _employeeRepository.GetByIdAsync(report.EmployeeId);
                     if (directReport != null)
                     {
                         count++;
-                        count += CountDirectReports(directReport);
+                        count += await CountDirectReportsAsync(directReport);
                     }
                 }
             }
             return count;
         }
 
-        public Employee Replace(Employee originalEmployee, Employee newEmployee)
+        public async Task<Employee> Replace(Employee originalEmployee, Employee newEmployee)
         {
             if(originalEmployee != null)
             {
@@ -86,20 +86,20 @@ namespace CodeChallenge.Services
                 if (newEmployee != null)
                 {
                     // ensure the original has been removed, otherwise EF will complain another entity w/ same id already exists
-                    _employeeRepository.SaveAsync().Wait();
+                    await _employeeRepository.SaveAsync();
 
                     _employeeRepository.Add(newEmployee);
                     // overwrite the new id with previous employee id
                     newEmployee.EmployeeId = originalEmployee.EmployeeId;
                 }
-                _employeeRepository.SaveAsync().Wait();
+                await _employeeRepository.SaveAsync();
             }
 
             return newEmployee;
         }
 
         // Creates a new Compensation record and saves it to the database.
-        public Compensation CreateCompensation(Compensation compensation)
+        public async Task<Compensation> CreateCompensation(Compensation compensation)
         {
             if (compensation == null)
             {
@@ -108,20 +108,20 @@ namespace CodeChallenge.Services
 
             // Save compensation to database
             var savedCompensation = _employeeRepository.AddCompensation(compensation);
-            _employeeRepository.SaveAsync().Wait();
+            await _employeeRepository.SaveAsync();
 
             return savedCompensation;
         }
 
         // Retrieves a Compensation record by employee ID.
-        public Compensation GetCompensationByEmployeeId(string employeeId)
+        public async Task<Compensation> GetCompensationByEmployeeId(string employeeId)
         {
             if (string.IsNullOrEmpty(employeeId))
             {
                 throw new ArgumentNullException(nameof(employeeId));
             }
 
-            return _employeeRepository.GetCompensationByEmployeeId(employeeId);
+            return await _employeeRepository.GetCompensationByEmployeeIdAsync(employeeId);
         }
     }
 }

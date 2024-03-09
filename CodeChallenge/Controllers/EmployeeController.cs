@@ -99,10 +99,15 @@ namespace CodeChallenge.Controllers
                 var result = CreatedAtRoute("getCompensationById", new { employeeId = createdCompensation.EmployeeId }, createdCompensation);
                 return result;
             }
+            catch (ArgumentNullException ex)
+            {
+                _logger.LogError(ex, "Failed to create compensation due to null argument");
+                return BadRequest("Invalid input: " + ex.ParamName);
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to create compensation");
-                return StatusCode(500, "Failed to create compensation");
+                return StatusCode(500, "Internal server error");
             }
         }
 
@@ -121,7 +126,8 @@ namespace CodeChallenge.Controllers
             var compensation = _employeeService.GetCompensationByEmployeeId(employeeId);
             if (compensation == null)
             {
-                return NotFound();
+                _logger.LogWarning($"Compensation record not found for employeeId: {employeeId}");
+                return NotFound($"Compensation record not found for employeeId: {employeeId}");
             }
             return Ok(compensation);
         }
