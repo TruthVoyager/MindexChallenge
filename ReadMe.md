@@ -6,6 +6,11 @@ database is bootstrapped with a serialized snapshot of the database. While the a
 accessed and mutated in the database without impacting the snapshot.
 
 ### How to Run
+Clone the repo.
+Ensure you have .net 6.0.0 installed.
+Use “dotnet build” in the command prompt. 
+Run the tests to see that they all pass.
+
 You can run this by executing `dotnet run` on the command line or in [Visual Studio Community Edition](https://www.visualstudio.com/downloads/).
 
 
