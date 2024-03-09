@@ -21,6 +21,7 @@ namespace CodeChallenge.Services
 
         public async Task<Employee> CreateAsync(Employee employee)
         {
+            try{
             if(employee != null)
             {
                 _employeeRepository.Add(employee);
@@ -28,21 +29,36 @@ namespace CodeChallenge.Services
             }
 
             return employee;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to create employee.");
+                throw;
+            }
         }
 
         public async Task<Employee> GetByIdAsync(string id)
         {
+            try{
             if(!String.IsNullOrEmpty(id))
             {
                 return await _employeeRepository.GetByIdAsync(id);
             }
 
             return null;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to retrieve employee by id.");
+                throw;
+            }
         }
 
         // Retrieves the reporting structure for a given employee, calculating the total number of reports.
         public async Task<ReportingStructure> GetReportingServiceByIdAsync(string id)
         {
+            try
+            {
             if (!String.IsNullOrEmpty(id))
             {
                 var employee = await _employeeRepository.GetByIdAsync(id);
@@ -58,70 +74,111 @@ namespace CodeChallenge.Services
             }
 
             return null;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to retrieve reporting structure.");
+                throw;
+            }
         }
 
         private async Task<int> CountDirectReportsAsync(Employee employee)
         {
-            int count = 0;
-            if (employee.DirectReports != null)
+            try
             {
-                foreach (var report in employee.DirectReports)
+                int count = 0;
+                if (employee.DirectReports != null)
                 {
-                    var directReport = await _employeeRepository.GetByIdAsync(report.EmployeeId);
-                    if (directReport != null)
+                    foreach (var report in employee.DirectReports)
                     {
-                        count++;
-                        count += await CountDirectReportsAsync(directReport);
+                        var directReport = await _employeeRepository.GetByIdAsync(report.EmployeeId);
+                        if (directReport != null)
+                        {
+                            count++;
+                            count += await CountDirectReportsAsync(directReport);
+                        }
                     }
                 }
+                return count;
             }
-            return count;
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to count direct reports.");
+                throw;
+            }
         }
 
         public async Task<Employee> ReplaceAsync(Employee originalEmployee, Employee newEmployee)
         {
-            if(originalEmployee != null)
+            try
             {
-                _employeeRepository.Remove(originalEmployee);
-                if (newEmployee != null)
+                if(originalEmployee != null)
                 {
-                    // ensure the original has been removed, otherwise EF will complain another entity w/ same id already exists
+                    _employeeRepository.Remove(originalEmployee);
+                    if (newEmployee != null)
+                    {
+                        // ensure the original has been removed, otherwise EF will complain another entity w/ same id already exists
+                        await _employeeRepository.SaveAsync();
+
+                        _employeeRepository.Add(newEmployee);
+                        // overwrite the new id with previous employee id
+                        newEmployee.EmployeeId = originalEmployee.EmployeeId;
+                    }
                     await _employeeRepository.SaveAsync();
-
-                    _employeeRepository.Add(newEmployee);
-                    // overwrite the new id with previous employee id
-                    newEmployee.EmployeeId = originalEmployee.EmployeeId;
                 }
-                await _employeeRepository.SaveAsync();
-            }
 
-            return newEmployee;
+                return newEmployee;
+            }
+            catch (System.Exception)
+            {
+                _logger.LogError("Failed to replace employee.");
+                throw;
+            }
+            
         }
 
         // Creates a new Compensation record and saves it to the database.
         public async Task<Compensation> CreateCompensationAsync(Compensation compensation)
         {
-            if (compensation == null)
+            try
             {
-                throw new ArgumentNullException(nameof(compensation));
+                if (compensation == null)
+                {
+                    throw new ArgumentNullException(nameof(compensation));
+                }
+
+                // Save compensation to database
+                var savedCompensation = _employeeRepository.AddCompensation(compensation);
+                await _employeeRepository.SaveAsync();
+
+                _logger.LogInformation("Compensation created successfully.");
+
+                return savedCompensation;
             }
-
-            // Save compensation to database
-            var savedCompensation = _employeeRepository.AddCompensation(compensation);
-            await _employeeRepository.SaveAsync();
-
-            return savedCompensation;
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to create compensation.");
+                throw;
+            }
         }
 
         // Retrieves a Compensation record by employee ID.
         public async Task<Compensation> GetCompensationByEmployeeIdAsync(string employeeId)
         {
-            if (string.IsNullOrEmpty(employeeId))
+            try
             {
-                throw new ArgumentNullException(nameof(employeeId));
-            }
+                if (string.IsNullOrEmpty(employeeId))
+                {
+                    throw new ArgumentNullException(nameof(employeeId));
+                }
 
-            return await _employeeRepository.GetCompensationByEmployeeIdAsync(employeeId);
+                return await _employeeRepository.GetCompensationByEmployeeIdAsync(employeeId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to retrieve compensation.");
+                throw;
+            }
         }
     }
 }

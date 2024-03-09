@@ -34,9 +34,18 @@ namespace CodeChallenge.Repositories
                 .SingleOrDefaultAsync(e => e.EmployeeId == id);
         }
 
-        public Task SaveAsync()
+        public async Task SaveAsync() // Updated to be asynchronous
         {
-            return _employeeContext.SaveChangesAsync();
+            try
+            {
+                await Task.Run(() => _employeeContext.SaveChangesAsync());
+                _logger.LogInformation("Changes saved to the database.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to save changes to the database.");
+                throw;
+            }
         }
 
         public Employee Remove(Employee employee)
@@ -58,4 +67,3 @@ namespace CodeChallenge.Repositories
         }
     }
 }
-
