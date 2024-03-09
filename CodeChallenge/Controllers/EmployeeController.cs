@@ -61,6 +61,16 @@ namespace CodeChallenge.Controllers
             return Ok(newEmployee);
         }
 
+        // GetReportingStructure
+        // Purpose: Retrieves the reporting structure for a given employee.
+        // Endpoint: GET /api/employee/getReportingStructure/{employeeId}
+        // Input: Employee ID as a path variable.
+        // Output: Returns a ReportingStructure object containing the employee ID and the total 
+        //     number of reports under that employee, with HTTP status code 200 (OK) if the employee exists, 
+        //     otherwise 404 (Not Found).
+        // Implementation: This method fetches the reporting structure using the GetReportingServiceById 
+        //     method of the EmployeeService. If the employee exists, it calculates the total number of 
+        //     reports and returns the ReportingStructure; otherwise, it returns a 404 status code.
         [HttpGet("getReportingStructure/{employeeId}")]
         public IActionResult GetReportingStructure(string employeeId)
         {
@@ -71,7 +81,15 @@ namespace CodeChallenge.Controllers
             }
             return Ok(reportingStructure);
         }
-
+ 
+        // CreateCompensation
+        // Purpose: Creates a new compensation record for an employee.
+        // Endpoint: POST /api/employee/createCompensation
+        // Input: A Compensation object containing the employee ID, salary, and effective date.
+        // Output: Returns the created Compensation object with HTTP status code 201 (Created).
+        // Implementation: This method attempts to create a compensation record using the CreateCompensation 
+        //     method of the EmployeeService. If successful, it returns the created compensation object. 
+        //     In case of failure, it logs the error and returns a 500 status code. 
         [HttpPost("createCompensation")]
         public IActionResult CreateCompensation(Compensation compensation)
         {
@@ -88,6 +106,15 @@ namespace CodeChallenge.Controllers
             }
         }
 
+        // GetCompensationById
+        // Purpose: Retrieves a compensation record by employee ID.
+        // Endpoint: GET /api/employee/getCompensationById/{employeeId}
+        // Input: Employee ID as a path variable.
+        // Output: Returns the corresponding Compensation object with HTTP status code 200 (OK) if found, 
+        //     otherwise 404 (Not Found).
+        // Implementation: This method fetches a compensation record using the GetCompensationByEmployeeId 
+        //     method of the EmployeeService. If a record is found, it is returned; otherwise, a 404 status 
+        //     code is returned.
         [HttpGet("getCompensationById/{employeeId}", Name = "getCompensationById")]
         public IActionResult GetCompensationById(string employeeId)
         {

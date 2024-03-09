@@ -44,12 +44,14 @@ namespace CodeChallenge.Repositories
             return _employeeContext.Remove(employee).Entity;
         }
 
+        // Adds a new Compensation record to the database.
         public Compensation AddCompensation(Compensation compensation)
         {
             _employeeContext.Compensations.Add(compensation);
             return compensation;
         }
 
+        // Retrieves a Compensation record by employee ID from the database.
         public Compensation GetCompensationByEmployeeId(string employeeId)
         {
             return _employeeContext.Compensations.FirstOrDefault(c => c.EmployeeId == employeeId);

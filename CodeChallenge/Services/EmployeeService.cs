@@ -40,6 +40,7 @@ namespace CodeChallenge.Services
             return null;
         }
 
+        // Retrieves the reporting structure for a given employee, calculating the total number of reports.
         public ReportingStructure GetReportingServiceById(string id)
         {
             if (!String.IsNullOrEmpty(id))
@@ -50,8 +51,8 @@ namespace CodeChallenge.Services
                     int numberOfReports = CountDirectReports(employee);
                     return new ReportingStructure
                     {
-                        EmployeeId = employee.EmployeeId,
-                        NumberOfReports = numberOfReports
+                        employee = employee.EmployeeId,
+                        numberOfReports = numberOfReports
                     };
                 }
             }
@@ -97,6 +98,7 @@ namespace CodeChallenge.Services
             return newEmployee;
         }
 
+        // Creates a new Compensation record and saves it to the database.
         public Compensation CreateCompensation(Compensation compensation)
         {
             if (compensation == null)
@@ -111,6 +113,7 @@ namespace CodeChallenge.Services
             return savedCompensation;
         }
 
+        // Retrieves a Compensation record by employee ID.
         public Compensation GetCompensationByEmployeeId(string employeeId)
         {
             if (string.IsNullOrEmpty(employeeId))

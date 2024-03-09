@@ -1,4 +1,3 @@
-
 using System;
 using System.Net;
 using System.Net.Http;
@@ -140,7 +139,9 @@ namespace CodeCodeChallenge.Tests.Integration
             Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
         }
 
-
+        // Tests the creation of a new employee compensation record. It sends a POST request with a Compensation object
+        // and expects a response status code of Created (201). It then verifies that the returned Compensation object
+        // matches the sent object.
         [TestMethod]
         public void CreateCompensation_Returns_Created()
         {
@@ -169,6 +170,9 @@ namespace CodeCodeChallenge.Tests.Integration
             Assert.AreEqual(compensation.EffectiveDate, newCompensation.EffectiveDate);
         }
 
+        // Tests the retrieval of an employee by ID. It sends a GET request for an existing employee's compensation
+        // and expects a response status code of OK (200). It then verifies that the returned Compensation object
+        // matches the expected values for employeeId, salary, and effectiveDate.
         [TestMethod]
         public void GetCompensation_Returns_Ok()
         {
@@ -200,7 +204,9 @@ namespace CodeCodeChallenge.Tests.Integration
             Assert.AreEqual(compensation.EffectiveDate, returnedCompensation.EffectiveDate);
         }
 
-
+        // Tests the retrieval of the reporting structure for a given employee. It sends a GET request for the
+        // reporting structure of an employee by ID and expects a response status code of OK (200). It then verifies
+        // that the returned ReportingStructure object contains the correct employeeId and numberOfReports.
         [TestMethod]
         public void GetReportingStructure_Returns_Ok()
         {
@@ -216,8 +222,8 @@ namespace CodeCodeChallenge.Tests.Integration
 
             var reportingStructure = response.DeserializeContent<ReportingStructure>();
             Assert.IsNotNull(reportingStructure);
-            Assert.AreEqual(employeeId, reportingStructure.EmployeeId);
-            Assert.AreEqual(4, reportingStructure.NumberOfReports);
+            Assert.AreEqual(employeeId, reportingStructure.employee);
+            Assert.AreEqual(4, reportingStructure.numberOfReports);
         }
     }
 }
