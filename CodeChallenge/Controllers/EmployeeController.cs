@@ -23,11 +23,16 @@ namespace CodeChallenge.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateEmployee([FromBody] Employee employee)
+        public async Task<IActionResult> CreateEmployeeAsync([FromBody] Employee employee)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             _logger.LogDebug($"Received employee create request for '{employee.FirstName} {employee.LastName}'");
 
-            _employeeService.Create(employee);
+            await _employeeService.CreateAsync(employee);
 
             var result = CreatedAtRoute("getEmployeeById", new { id = employee.EmployeeId }, employee);
 
@@ -35,11 +40,11 @@ namespace CodeChallenge.Controllers
         }
 
         [HttpGet("{id}", Name = "getEmployeeById")]
-        public IActionResult GetEmployeeById(String id)
+        public async Task<IActionResult> GetEmployeeByIdAsync(String id)
         {
             _logger.LogDebug($"Received employee get request for '{id}'");
 
-            var employee = _employeeService.GetById(id);
+            var employee = await _employeeService.GetByIdAsync(id);
 
             if (employee == null)
                 return NotFound();
@@ -48,15 +53,20 @@ namespace CodeChallenge.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult ReplaceEmployee(String id, [FromBody]Employee newEmployee)
+        public async Task<IActionResult> ReplaceEmployeeAsync(String id, [FromBody]Employee newEmployee)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             _logger.LogDebug($"Recieved employee update request for '{id}'");
 
-            var existingEmployee = _employeeService.GetById(id);
+            var existingEmployee = await _employeeService.GetByIdAsync(id);
             if (existingEmployee == null)
                 return NotFound();
 
-            _employeeService.Replace(existingEmployee, newEmployee);
+            newEmployee = await _employeeService.ReplaceAsync(existingEmployee, newEmployee);
 
             return Ok(newEmployee);
         }
@@ -72,9 +82,9 @@ namespace CodeChallenge.Controllers
         //     method of the EmployeeService. If the employee exists, it calculates the total number of 
         //     reports and returns the ReportingStructure; otherwise, it returns a 404 status code.
         [HttpGet("getReportingStructure/{employeeId}")]
-        public IActionResult GetReportingStructure(string employeeId)
+        public async Task<IActionResult> GetReportingStructureAsync(string employeeId)
         {
-            var reportingStructure = _employeeService.GetReportingServiceById(employeeId);
+            var reportingStructure = await _employeeService.GetReportingServiceByIdAsync(employeeId);
             if (reportingStructure == null)
             {
                 return NotFound();
@@ -91,11 +101,16 @@ namespace CodeChallenge.Controllers
         //     method of the EmployeeService. If successful, it returns the created compensation object. 
         //     In case of failure, it logs the error and returns a 500 status code. 
         [HttpPost("createCompensation")]
-        public IActionResult CreateCompensation(Compensation compensation)
+        public async Task<IActionResult> CreateCompensationAsync([FromBody] Compensation compensation)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             try
             {
-                var createdCompensation = _employeeService.CreateCompensation(compensation);
+                var createdCompensation = await _employeeService.CreateCompensationAsync(compensation);
                 var result = CreatedAtRoute("getCompensationById", new { employeeId = createdCompensation.EmployeeId }, createdCompensation);
                 return result;
             }
@@ -121,9 +136,9 @@ namespace CodeChallenge.Controllers
         //     method of the EmployeeService. If a record is found, it is returned; otherwise, a 404 status 
         //     code is returned.
         [HttpGet("getCompensationById/{employeeId}", Name = "getCompensationById")]
-        public IActionResult GetCompensationById(string employeeId)
+        public async Task<IActionResult> GetCompensationByIdAsync(string employeeId)
         {
-            var compensation = _employeeService.GetCompensationByEmployeeId(employeeId);
+            var compensation = await _employeeService.GetCompensationByEmployeeIdAsync(employeeId);
             if (compensation == null)
             {
                 _logger.LogWarning($"Compensation record not found for employeeId: {employeeId}");

@@ -27,11 +27,11 @@ namespace CodeChallenge.Repositories
             return employee;
         }
 
-        public Employee GetById(string id)
+        public async Task<Employee> GetByIdAsync(string id) // Updated return type to Task<Employee>
         {
-            return _employeeContext.Employees
+            return await _employeeContext.Employees
                 .Include(e => e.DirectReports)
-                .SingleOrDefault(e => e.EmployeeId == id);
+                .SingleOrDefaultAsync(e => e.EmployeeId == id);
         }
 
         public Task SaveAsync()
@@ -52,9 +52,10 @@ namespace CodeChallenge.Repositories
         }
 
         // Retrieves a Compensation record by employee ID from the database.
-        public Compensation GetCompensationByEmployeeId(string employeeId)
+        public async Task<Compensation> GetCompensationByEmployeeIdAsync(string employeeId)
         {
-            return _employeeContext.Compensations.FirstOrDefault(c => c.EmployeeId == employeeId);
+            return await _employeeContext.Compensations.FirstOrDefaultAsync(c => c.EmployeeId == employeeId);
         }
     }
 }
+

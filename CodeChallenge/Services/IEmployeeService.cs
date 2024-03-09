@@ -8,11 +8,11 @@ namespace CodeChallenge.Services
 {
     public interface IEmployeeService
     {
-        Employee GetById(String id);
-        Employee Create(Employee employee);
-        Employee Replace(Employee originalEmployee, Employee newEmployee);
-        ReportingStructure GetReportingServiceById(string id);
-        Compensation CreateCompensation(Compensation compensation);
-        Compensation GetCompensationByEmployeeId(string employeeId);
+        Task<Employee> GetByIdAsync(String id);
+        Task<Employee> CreateAsync(Employee employee);
+        Task<Employee> ReplaceAsync(Employee originalEmployee, Employee newEmployee);
+        Task<ReportingStructure> GetReportingServiceByIdAsync(string id);
+        Task<Compensation> CreateCompensationAsync(Compensation compensation);
+        Task<Compensation> GetCompensationByEmployeeIdAsync(string employeeId);
     }
 }

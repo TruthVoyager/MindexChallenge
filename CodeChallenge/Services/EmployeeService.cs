@@ -19,7 +19,7 @@ namespace CodeChallenge.Services
             _logger = logger;
         }
 
-        public async Task<Employee> Create(Employee employee)
+        public async Task<Employee> CreateAsync(Employee employee)
         {
             if(employee != null)
             {
@@ -30,7 +30,7 @@ namespace CodeChallenge.Services
             return employee;
         }
 
-        public async Task<Employee> GetById(string id)
+        public async Task<Employee> GetByIdAsync(string id)
         {
             if(!String.IsNullOrEmpty(id))
             {
@@ -41,7 +41,7 @@ namespace CodeChallenge.Services
         }
 
         // Retrieves the reporting structure for a given employee, calculating the total number of reports.
-        public async Task<ReportingStructure> GetReportingServiceById(string id)
+        public async Task<ReportingStructure> GetReportingServiceByIdAsync(string id)
         {
             if (!String.IsNullOrEmpty(id))
             {
@@ -78,7 +78,7 @@ namespace CodeChallenge.Services
             return count;
         }
 
-        public async Task<Employee> Replace(Employee originalEmployee, Employee newEmployee)
+        public async Task<Employee> ReplaceAsync(Employee originalEmployee, Employee newEmployee)
         {
             if(originalEmployee != null)
             {
@@ -99,7 +99,7 @@ namespace CodeChallenge.Services
         }
 
         // Creates a new Compensation record and saves it to the database.
-        public async Task<Compensation> CreateCompensation(Compensation compensation)
+        public async Task<Compensation> CreateCompensationAsync(Compensation compensation)
         {
             if (compensation == null)
             {
@@ -114,7 +114,7 @@ namespace CodeChallenge.Services
         }
 
         // Retrieves a Compensation record by employee ID.
-        public async Task<Compensation> GetCompensationByEmployeeId(string employeeId)
+        public async Task<Compensation> GetCompensationByEmployeeIdAsync(string employeeId)
         {
             if (string.IsNullOrEmpty(employeeId))
             {
