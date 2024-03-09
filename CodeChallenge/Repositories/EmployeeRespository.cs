@@ -61,7 +61,7 @@ namespace CodeChallenge.Repositories
         // Retrieves a Compensation record by employee ID from the database.
         public async Task<Compensation> GetCompensationByEmployeeIdAsync(string employeeId)
         {
-            return await _employeeContext.Compensations.FirstOrDefaultAsync(c => c.EmployeeId == employeeId);
+            return await _employeeContext.Compensations.FirstOrDefaultAsync(c => c.employee == employeeId);
         }
     }
 }

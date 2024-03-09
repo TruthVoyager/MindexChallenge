@@ -6,13 +6,13 @@ namespace CodeChallenge.Models
     public class Compensation
     {
         [Required]
-        public string EmployeeId { get; set; }
+        public string employee { get; set; }
 
         [Required]
         [Range(0, double.MaxValue, ErrorMessage = "Salary must be a positive number")]
-        public decimal Salary { get; set; }
+        public decimal salary { get; set; }
 
         [Required]
-        public DateTime EffectiveDate { get; set; }
+        public DateTime effectiveDate { get; set; }
     }
 }

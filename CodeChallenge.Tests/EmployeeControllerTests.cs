@@ -148,9 +148,9 @@ namespace CodeCodeChallenge.Tests.Integration
             // Arrange
             var compensation = new Compensation()
             {
-                EmployeeId = "16a596ae-edd3-4847-99fe-c4518e82c86f",
-                Salary = 50000,
-                EffectiveDate = DateTime.Now
+                employee = "16a596ae-edd3-4847-99fe-c4518e82c86f",
+                salary = 50000,
+                effectiveDate = DateTime.Now
             };
 
             var requestContent = new JsonSerialization().ToJson(compensation);
@@ -165,9 +165,9 @@ namespace CodeCodeChallenge.Tests.Integration
 
             var newCompensation = response.DeserializeContent<Compensation>();
             Assert.IsNotNull(newCompensation);
-            Assert.AreEqual(compensation.EmployeeId, newCompensation.EmployeeId);
-            Assert.AreEqual(compensation.Salary, newCompensation.Salary);
-            Assert.AreEqual(compensation.EffectiveDate, newCompensation.EffectiveDate);
+            Assert.AreEqual(compensation.employee, newCompensation.employee);
+            Assert.AreEqual(compensation.salary, newCompensation.salary);
+            Assert.AreEqual(compensation.effectiveDate, newCompensation.effectiveDate);
         }
 
         // Tests the retrieval of an employee by ID. It sends a GET request for an existing employee's compensation
@@ -179,9 +179,9 @@ namespace CodeCodeChallenge.Tests.Integration
             // Arrange
             var compensation = new Compensation()
             {
-                EmployeeId = "03aa1462-ffa9-4978-901b-7c001562cf6f",
-                Salary = 50000,
-                EffectiveDate = DateTime.Now
+                employee = "03aa1462-ffa9-4978-901b-7c001562cf6f",
+                salary = 50000,
+                effectiveDate = DateTime.Now
             };
             // Create the compensation entry
             var requestContent = new JsonSerialization().ToJson(compensation);
@@ -191,7 +191,7 @@ namespace CodeCodeChallenge.Tests.Integration
             Assert.AreEqual(HttpStatusCode.Created, postResponse.StatusCode);
 
             // Execute
-            var getRequestTask = _httpClient.GetAsync($"api/employee/getCompensationById/{compensation.EmployeeId}");
+            var getRequestTask = _httpClient.GetAsync($"api/employee/getCompensationById/{compensation.employee}");
             var response = getRequestTask.Result;
 
             // Assert
@@ -199,9 +199,9 @@ namespace CodeCodeChallenge.Tests.Integration
 
             var returnedCompensation = response.DeserializeContent<Compensation>();
             Assert.IsNotNull(returnedCompensation);
-            Assert.AreEqual(compensation.EmployeeId, returnedCompensation.EmployeeId);
-            Assert.AreEqual(compensation.Salary, returnedCompensation.Salary);
-            Assert.AreEqual(compensation.EffectiveDate, returnedCompensation.EffectiveDate);
+            Assert.AreEqual(compensation.employee, returnedCompensation.employee);
+            Assert.AreEqual(compensation.salary, returnedCompensation.salary);
+            Assert.AreEqual(compensation.effectiveDate, returnedCompensation.effectiveDate);
         }
 
         // Tests the retrieval of the reporting structure for a given employee. It sends a GET request for the

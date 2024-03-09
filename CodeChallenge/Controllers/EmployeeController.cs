@@ -109,7 +109,7 @@ namespace CodeChallenge.Controllers
             try
             {
                 var createdCompensation = await _employeeService.CreateCompensationAsync(compensation);
-                var result = CreatedAtRoute("getCompensationById", new { employeeId = createdCompensation.EmployeeId }, createdCompensation);
+                var result = CreatedAtRoute("getCompensationById", new { employeeId = createdCompensation.employee }, createdCompensation);
                 return result;
             }
             catch (ArgumentNullException ex)

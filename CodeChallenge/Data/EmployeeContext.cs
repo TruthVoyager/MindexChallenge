@@ -16,7 +16,7 @@ namespace CodeChallenge.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Define primary key for Compensation entity
-            modelBuilder.Entity<Compensation>().HasKey(c => c.EmployeeId);
+            modelBuilder.Entity<Compensation>().HasKey(c => c.employee);
 
             base.OnModelCreating(modelBuilder);
         }
